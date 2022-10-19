@@ -1,0 +1,18 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pubsub
+spec:
+  type: pubsub.azure.servicebus
+  version: v1
+  metadata:
+  - name: connectionString      # Azure EventHubs connection string
+    value: "{.serviceBusConnectionString}"
+  - name: timeoutInSec
+    value: 80
+  - name: maxDeliveryCount
+    value: 15
+  - name: lockDurationInSec
+    value: 5
+  - name: defaultMessageTimeToLiveInSec
+    value: 2
