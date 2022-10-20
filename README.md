@@ -22,16 +22,22 @@ PROJECT_NAME="reliaar2"
 bash ./create-config.sh $PROJECT_NAME
 ```
 
-## Launch locally
+## Launch locally without Dapr
 - create azure resources by running infra script 
 - create local config by running create config script or adjust environment variables in local.env accordingly
 - launch debug and open http://localhost:5025
 
+
+## Launch locally with Dapr
 ```
+cd /src/Message.Creator
 dapr run --app-id message-creator --components-path ../../components/ --app-port 5023 --dapr-http-port 3500  -- dotnet run --project .
+````
 
+```
+cd /src/Message.Receiver
 dapr run --app-id message-receiver --components-path ../../components/ --app-port 5025 --dapr-http-port 3500  -- dotnet run --project .
-
+```
 
 {
     "specversion": "1.0",

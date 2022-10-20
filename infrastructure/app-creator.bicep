@@ -70,6 +70,10 @@ resource messagecreator 'Microsoft.App/containerapps@2022-03-01' = {
               value: '8080'
             }
             {
+              name: 'VERSION'
+              value: 'frontend - blue'
+            }
+            {
               name: 'ASPNETCORE_URLS'
               value: 'http://+:8080'
             }
