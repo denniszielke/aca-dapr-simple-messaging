@@ -28,18 +28,12 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'gateway'
         properties: {
           addressPrefix: '10.0.0.0/24'
-          networkSecurityGroup: {
-            id: subnetNSG.id
-          }
         }
       }
       {
         name: 'jumpbox'
         properties: {
           addressPrefix: '10.0.1.0/24'
-          networkSecurityGroup: {
-            id: subnetNSG.id
-          }
         }
       }
       {
@@ -58,18 +52,12 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'aca-control'
         properties: {
           addressPrefix: '10.0.8.0/21'
-          networkSecurityGroup: {
-            id: subnetNSG.id
-          }
         }
       }
       {
         name: 'aca-apps'
         properties: {
           addressPrefix: '10.0.16.0/21'
-          networkSecurityGroup: {
-            id: subnetNSG.id
-          }
         }
       }
     ]

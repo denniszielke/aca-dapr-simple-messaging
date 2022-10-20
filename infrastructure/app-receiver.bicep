@@ -1,6 +1,6 @@
 param environmentName string
 param location string = resourceGroup().location
-param appInsightsInstrumentationKey string
+param appInsightsConnectionString string
 param containerImage string
 param serviceBusName string 
 
@@ -73,8 +73,12 @@ resource messagereceiver 'Microsoft.App/containerapps@2022-03-01' = {
               value: 'frontend - blue'
             }
             {
-              name: 'INSTRUMENTATIONKEY'
-              value: appInsightsInstrumentationKey
+              name: 'ASPNETCORE_URLS'
+              value: 'http://+:8080'
+            }
+            {
+              name: 'ApplicationInsights__ConnectionString'
+              value: appInsightsConnectionString
             }
           ]
         }

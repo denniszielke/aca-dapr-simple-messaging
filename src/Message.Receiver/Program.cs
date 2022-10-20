@@ -33,6 +33,11 @@ builder.Services.Configure<JsonOptions>(options =>
 
 var app = builder.Build();
 
+app.MapGet("/ping", () => {
+    Console.WriteLine("Recieved ping.");
+    return Results.Ok("Pong!");
+});
+
 app.MapGet("/dapr/subscribe", () => {
     var sub = new DaprSubscription(PubsubName: "pubsub", Topic: "messages", Route: "receive");
     Console.WriteLine("Dapr pub/sub is subscribed to: " + sub);

@@ -4,7 +4,8 @@ set -e
 
 # infrastructure deployment properties
 PROJECT_NAME="$1"
-LOCATION="$2"
+REGISTRY_OWNER="$2"
+IMAGE_TAG="$3"
 
 if [ "$PROJECT_NAME" == "" ]; then
 echo "No project name provided - aborting"
@@ -23,16 +24,16 @@ RESOURCE_GROUP="$PROJECT_NAME"
 AZURE_CORE_ONLY_SHOW_ERRORS="True"
 
 if [ $(az group exists --name $RESOURCE_GROUP) = false ]; then
-    echo "creating resource group $RESOURCE_GROUP..."
-    az group create -n $RESOURCE_GROUP -l $LOCATION -o none
-    echo "resource group $RESOURCE_GROUP created"
+    echo "resource group $RESOURCE_GROUP does not exist"
+    error=1
 else   
     echo "resource group $RESOURCE_GROUP already exists"
     LOCATION=$(az group show -n $RESOURCE_GROUP --query location -o tsv)
 fi
 
 az deployment group create -g $RESOURCE_GROUP -f ./infrastructure/apps.bicep \
-          -p projectName=$PROJECT_NAME
+          -p projectName=$PROJECT_NAME -p creatorImageTag=$IMAGE_TAG -p receiverImageTag=$IMAGE_TAG \
+          -p containerRegistryOwner=$REGISTRY_OWNER
 
 
 

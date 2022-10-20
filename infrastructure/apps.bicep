@@ -49,7 +49,7 @@ module messagecreator 'app-creator.bicep' = {
   params: {
     containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-creator:${creatorImageTag}'
     environmentName: projectName
-    appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
+    appInsightsConnectionString: logging.outputs.appInsightsConnectionString
     serviceBusName: projectName
   }
 }
@@ -59,7 +59,7 @@ module messagereceiver 'app-receiver.bicep' = {
   params: {
     containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-creator:${receiverImageTag}'
     environmentName: projectName
-    appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
+    appInsightsConnectionString: logging.outputs.appInsightsConnectionString
     serviceBusName: projectName
   }
 }

@@ -63,7 +63,7 @@ dapr run --app-id message-receiver --components-path ../../components/ --app-por
 ## Deploy Apps into Container Apps
 
 ```
-PROJECT_NAME="reliabr2"
+PROJECT_NAME="reliaar2"
 GITHUB_REPO_OWNER="denniszielke"
 IMAGE_TAG="latest"
 
