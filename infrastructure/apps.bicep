@@ -57,7 +57,7 @@ module messagecreator 'app-creator.bicep' = {
 module messagereceiver 'app-receiver.bicep' = {
   name: 'container-app-js-calc-frontend'
   params: {
-    containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-creator:${receiverImageTag}'
+    containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-receiver:${receiverImageTag}'
     environmentName: projectName
     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
     serviceBusName: projectName
