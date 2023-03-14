@@ -81,9 +81,9 @@ curl -svk -ls --verbose -X GET -H "Host: $DNS" -H 'Accept: application/json' -H 
 ### Invoke/Publish Message
 ```
 
-curl -svk -ls --verbose  -X POST -H "Host: $DNS" -H 'Accept: application/json' -H 'Content-Type: application/json' -d '{ "id": "123", "temperature": "23", "humidity": "43", "name": "dennis", "message": "post invoke from dennis", "timestamp": "now"}' http://$HOST/publish
+curl -svk -ls --verbose  -X POST -H "Host: $DNS" -H 'Accept: application/json' -H 'Content-Type: application/json' -d '{ "id": "55", "temperature": "23", "humidity": "43", "name": "dennis", "message": "post invoke from dennis", "timestamp": "now"}' http://$HOST/publish
 
-curl -svk -ls --verbose  -X POST -H "Host: $DNS" -H 'Accept: application/json' -H 'Content-Type: application/json' -d '{ "id": "123", "temperature": "23", "humidity": "43", "name": "dennis", "message": "post publish from dennis", "timestamp": "now"}' http://$HOST/receive
+curl -svk -ls --verbose  -X POST -H "Host: $DNS" -H 'Accept: application/json' -H 'Content-Type: application/json' -d '{ "id": "454", "temperature": "23", "humidity": "43", "name": "dennis", "message": "post publish from dennis", "timestamp": "now"}' http://$HOST/receive
 
 ```
 

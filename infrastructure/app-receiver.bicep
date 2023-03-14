@@ -70,6 +70,7 @@ resource messagereceiver 'Microsoft.App/containerapps@2022-11-01-preview' = {
   }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
+    workloadProfileType: 'Consumption'
     configuration: {
       activeRevisionsMode: 'single'
       ingress: {

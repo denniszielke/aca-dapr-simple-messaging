@@ -28,7 +28,6 @@ resource environment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
         sharedKey: logAnalyticsSharedKey
       }
     }
-
     daprAIConnectionString: appInsightsConnectionString
     daprAIInstrumentationKey: appInsightsInstrumentationKey
     vnetConfiguration: {

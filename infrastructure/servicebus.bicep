@@ -12,3 +12,17 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-06-01-preview' = {
     capacity: 1
   }
 }
+
+resource topicmessages 'Microsoft.ServiceBus/namespaces/topics@2022-10-01-preview' = {
+  name: 'messages'
+  parent: serviceBus
+  properties: {
+  }
+}
+
+resource subscriptionb 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2022-10-01-preview' = {
+  name: 'message-receiver'
+  parent: topicmessages
+  properties: {
+  }
+}
