@@ -16,17 +16,22 @@ module logging 'logging.bicep' = {
 module environment 'environment.bicep' = {
   name: 'container-app-environment'
   params: {
-    environmentName: projectName
+    environmentName: '${projectName}'
     logAnalyticsCustomerId: logging.outputs.logAnalyticsCustomerId
     logAnalyticsSharedKey: logging.outputs.logAnalyticsSharedKey
     appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
+    storageAccountName: storage.outputs.storageAccountName
   }
 }
 
 module servicebus 'servicebus.bicep' = {
   name: 'servicebus'
   params: {
-    serviceBusName: projectName
+    serviceBusName: 'sb-${projectName}'
   }
+}
+
+module storage 'storage.bicep' = {
+  name: 'storage'
 }

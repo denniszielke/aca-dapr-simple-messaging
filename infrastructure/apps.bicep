@@ -25,27 +25,23 @@ module environment 'environment.bicep' = {
     logAnalyticsSharedKey: logging.outputs.logAnalyticsSharedKey
     appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
+    storageAccountName: storage.outputs.storageAccountName
   }
 }
 
 module servicebus 'servicebus.bicep' = {
   name: 'servicebus'
   params: {
-    serviceBusName: projectName
+    serviceBusName: 'sb-${projectName}'
   }
 }
 
-
-module pubsub 'aca-pubsub.bicep' = {
-  name: 'aca-pubsub'
-  params: {
-    environmentName: projectName
-    serviceBusName: projectName
-  }
+module storage 'storage.bicep' = {
+  name: 'storage'
 }
 
 module messagecreator 'app-creator.bicep' = {
-  name: 'container-app-js-calc-backend'
+  name: 'container-app-creator'
   params: {
     containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-creator:${creatorImageTag}'
     environmentName: projectName
@@ -55,12 +51,22 @@ module messagecreator 'app-creator.bicep' = {
 }
 
 module messagereceiver 'app-receiver.bicep' = {
-  name: 'container-app-js-calc-frontend'
+  name: 'container-app-receiver'
   params: {
     containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-receiver:${receiverImageTag}'
     environmentName: projectName
     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
     serviceBusName: projectName
+  }
+}
+
+module explorer 'app-explorer.bicep' = {
+  name: 'container-app-explorer'
+  params: {
+    containerImage: 'ghcr.io/denniszielke/container-apps/js-dapr-explorer:3602565660'
+    environmentName: projectName
+    appInsightsConnectionString: logging.outputs.appInsightsConnectionString
+    storageAccountName: storage.outputs.storageAccountName
   }
 }
 

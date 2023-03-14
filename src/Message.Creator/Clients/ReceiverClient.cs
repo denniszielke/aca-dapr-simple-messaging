@@ -21,7 +21,7 @@ namespace Message.Creator.Clients
             var client = _httpClientFactory.CreateClient("Receiver"); 
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             MessageResponse receivedResponse = null;
-            var response = await client.PostAsJsonAsync("/api/message/receive", 
+            var response = await client.PostAsJsonAsync("/v1.0/invoke/message-receiver/method/receive", 
             message, 
             new System.Text.Json.JsonSerializerOptions(){
                 WriteIndented = true,

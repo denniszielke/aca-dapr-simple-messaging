@@ -9,7 +9,7 @@ High Level Architecture:
 ## Deploy Azure resources
 
 ```
-PROJECT_NAME="reliaar2"
+PROJECT_NAME="dzaca67"
 LOCATION="westeurope"
 
 bash ./deploy-infra.sh $PROJECT_NAME $LOCATION
@@ -18,7 +18,7 @@ bash ./deploy-infra.sh $PROJECT_NAME $LOCATION
 
 ## Create config file
 ```
-PROJECT_NAME="reliaar2"
+PROJECT_NAME="dzaca67"
 bash ./create-config.sh $PROJECT_NAME
 ```
 
@@ -61,15 +61,36 @@ dapr run --app-id message-receiver --components-path ../../components/ --app-por
     "datacontenttype": "application/json; charset=utf-8",
     "source": "message-creator",
     "topic": "messages",
-    "pubsubname": "pubsub",
+    "pubsubname": "publisher",
     "tracestate": ""
 }
+```
+
+## Submit new request via curl
+
+DNS='message-creator.jollycliff-cb0f66cb.westeurope.azurecontainerapps.io'
+HOST='10.0.16.27'
+
+### Ping
+
+```
+-svk -ls -H 'Host: demo.greendune-d682b90f.westeurope.azurecontainerapps.io' http://10.0.5.11 --verbose
+curl -svk -ls --verbose -X GET -H "Host: $DNS" -H 'Accept: application/json' -H 'Content-Type: application/json'  http://$HOST/getname
+```
+
+### Invoke/Publish Message
+```
+
+curl -svk -ls --verbose  -X POST -H "Host: $DNS" -H 'Accept: application/json' -H 'Content-Type: application/json' -d '{ "id": "123", "temperature": "23", "humidity": "43", "name": "dennis", "message": "post invoke from dennis", "timestamp": "now"}' http://$HOST/publish
+
+curl -svk -ls --verbose  -X POST -H "Host: $DNS" -H 'Accept: application/json' -H 'Content-Type: application/json' -d '{ "id": "123", "temperature": "23", "humidity": "43", "name": "dennis", "message": "post publish from dennis", "timestamp": "now"}' http://$HOST/receive
+
 ```
 
 ## Deploy Apps into Container Apps
 
 ```
-PROJECT_NAME="reliaar2"
+PROJECT_NAME="dzaca67"
 GITHUB_REPO_OWNER="denniszielke"
 IMAGE_TAG="latest"
 

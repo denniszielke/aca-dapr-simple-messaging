@@ -29,7 +29,7 @@ namespace Message.Creator.Clients
             try
             {
 
-                  var response = await client.PostAsJsonAsync("/v1.0/publish/pubsub/messages", 
+                  var response = await client.PostAsJsonAsync("/v1.0/publish/publisher/messages", 
             content);
 
                 Console.WriteLine(response.StatusCode);

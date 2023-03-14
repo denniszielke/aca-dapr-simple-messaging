@@ -4,72 +4,21 @@ param logAnalyticsCustomerId string
 param logAnalyticsSharedKey string
 param appInsightsInstrumentationKey string
 param appInsightsConnectionString string
+param storageAccountName string 
 
-resource subnetNSG 'Microsoft.Network/networkSecurityGroups@2022-01-01' = {
-  name: 'nsg-${resourceGroup().name}'
-  location: location
-  properties: {
-    securityRules: [
-    ]
-  }
+resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+  name: storageAccountName
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: 'vnet-${resourceGroup().name}'
-  location: resourceGroup().location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '10.0.0.0/19'
-      ]
-    }
-    subnets: [
-      {
-        name: 'gateway'
-        properties: {
-          addressPrefix: '10.0.0.0/24'
-        }
-      }
-      {
-        name: 'jumpbox'
-        properties: {
-          addressPrefix: '10.0.1.0/24'
-        }
-      }
-      {
-        name: 'apim'
-        properties: {
-          addressPrefix: '10.0.2.0/24'
-        }
-      }
-      {
-        name: 'AzureFirewallSubnet'
-        properties: {
-          addressPrefix: '10.0.3.0/24'
-        }
-      }
-      {
-        name: 'aca-control'
-        properties: {
-          addressPrefix: '10.0.8.0/21'
-        }
-      }
-      {
-        name: 'aca-apps'
-        properties: {
-          addressPrefix: '10.0.16.0/21'
-        }
-      }
-    ]
-  }
 }
 
-
-resource environment 'Microsoft.App/managedEnvironments@2022-06-01-preview' = {
+resource environment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
   name: environmentName
   location: location
   sku: {
-    name: 'Consumption'
+    name: 'Premium'
   }
   properties: {
     appLogsConfiguration: {
@@ -79,20 +28,27 @@ resource environment 'Microsoft.App/managedEnvironments@2022-06-01-preview' = {
         sharedKey: logAnalyticsSharedKey
       }
     }
+
     daprAIConnectionString: appInsightsConnectionString
     daprAIInstrumentationKey: appInsightsInstrumentationKey
     vnetConfiguration: {
-      dockerBridgeCidr: '172.17.0.1/16'
-      infrastructureSubnetId: '${vnet.id}/subnets/aca-control'
-      internal: false
-      platformReservedCidr: '10.2.0.0/20'
-      platformReservedDnsIP: '10.2.0.10'
-      runtimeSubnetId: '${vnet.id}/subnets/aca-apps'
-      outboundSettings : {
-        outBoundType: 'LoadBalancer'
-      } 
+      infrastructureSubnetId: '${vnet.id}/subnets/aca-apps'
+      internal: true
     }
     zoneRedundant: false
+  }
+}
+
+resource managedEnvStorage 'Microsoft.App/managedEnvironments/storages@2022-06-01-preview' = {
+  name: storageAccountName
+  parent: environment
+  properties: {
+    azureFile: {
+      accessMode: 'ReadWrite'
+      shareName: 'share'
+      accountName: storage.name
+      accountKey: listKeys(storage.id, storage.apiVersion).keys[0].value
+    }
   }
 }
 

@@ -41,7 +41,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient("Receiver", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("RECEIVER_URL"));
+    client.BaseAddress = new Uri("http://localhost:" + (Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500"));
 });
 
 builder.Services.AddHttpClient("DaprReceiver", client =>

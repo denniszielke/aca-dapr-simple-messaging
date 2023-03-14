@@ -8,10 +8,69 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-06-01-preview' existin
   name: serviceBusName
 }
 
+resource cappsEnv 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
+  name: environmentName
+}
+
+resource mcmsi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'messagecreator-msi'
+  location: location
+}
+
+var messagePublisherlRoleDefinitionId = '/providers/Microsoft.Authorization/roleDefinitions/69a216fc-b8fb-44d8-bc22-1f3c2cd27a39'
+
+resource publisherRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+  name: guid(subscription().subscriptionId, mcmsi.id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: messagePublisherlRoleDefinitionId
+    principalId: mcmsi.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource daprPublisherComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview' = {
+  name: 'publisher'
+  parent: cappsEnv
+  properties: {
+    componentType: 'pubsub.azure.servicebus'
+    version: 'v1'
+    metadata: [
+      {
+        name: 'namespaceName'
+        value: 'sb-${serviceBus.name}.servicebus.windows.net'
+      }
+      {
+        name: 'azureEnvironment'
+        value: 'AZUREPUBLICCLOUD'
+      }
+      {
+        name: 'azureTenantId'
+        value: tenant().tenantId
+      }      
+      {
+        name: 'azureClientId'
+        value: mcmsi.properties.clientId
+      }
+    ]
+    scopes: [
+      'message-creator'
+    ]
+  }
+}
+
+
+
 // https://learn.microsoft.com/en-us/azure/templates/microsoft.app/containerapps?pivots=deployment-language-bicep
-resource messagecreator 'Microsoft.App/containerapps@2022-03-01' = {
+resource messagecreator 'Microsoft.App/containerapps@2022-11-01-preview' = {
   name: 'message-creator'
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${mcmsi.id}': {}
+    }
+  }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
     configuration: {
@@ -19,7 +78,7 @@ resource messagecreator 'Microsoft.App/containerapps@2022-03-01' = {
       ingress: {
         external: true
         targetPort: 8080
-        allowInsecure: false    
+        allowInsecure: true    
         transport: 'Auto'
       }
       dapr: {
@@ -28,12 +87,6 @@ resource messagecreator 'Microsoft.App/containerapps@2022-03-01' = {
         appPort: 8080
         appProtocol: 'http'
       }
-      secrets: [
-        {
-          name: 'sb-root-connectionstring'
-          value: listKeys('${serviceBus.id}/AuthorizationRules/RootManageSharedAccessKey', serviceBus.apiVersion).primaryConnectionString
-        }
-      ]
     }
     template: {
       containers: [

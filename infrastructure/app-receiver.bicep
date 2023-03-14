@@ -8,9 +8,66 @@ resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-06-01-preview' existin
   name: serviceBusName
 }
 
-resource messagereceiver 'Microsoft.App/containerapps@2022-03-01' = {
+resource cappsEnv 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
+  name: environmentName
+}
+
+resource mrmsi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'messagereceiver-msi'
+  location: location
+}
+
+var messageReceiverRoleDefinitionId = '/providers/Microsoft.Authorization/roleDefinitions/4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0'
+
+resource receiverRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+  name: guid(subscription().subscriptionId, mrmsi.id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: messageReceiverRoleDefinitionId
+    principalId: mrmsi.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource daprReceiverComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview' = {
+  name: 'pubsub'
+  parent: cappsEnv
+  properties: {
+    componentType: 'pubsub.azure.servicebus'
+    version: 'v1'
+    metadata: [
+      {
+        name: 'namespaceName'
+        value: 'sb-${serviceBus.name}.servicebus.windows.net'
+      }
+      {
+        name: 'azureEnvironment'
+        value: 'AZUREPUBLICCLOUD'
+      }
+      {
+        name: 'azureTenantId'
+        value: tenant().tenantId
+      }      
+      {
+        name: 'azureClientId'
+        value: mrmsi.properties.clientId
+      }
+    ]
+    scopes: [
+      'message-receiver'
+    ]
+  }
+}
+
+resource messagereceiver 'Microsoft.App/containerapps@2022-11-01-preview' = {
   name: 'message-receiver'
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${mrmsi.id}': {}
+    }
+  }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
     configuration: {
@@ -18,15 +75,9 @@ resource messagereceiver 'Microsoft.App/containerapps@2022-03-01' = {
       ingress: {
         external: true
         targetPort: 8080
-        allowInsecure: false    
+        allowInsecure: true    
         transport: 'Auto'
       }
-      secrets: [
-        {
-          name: 'sb-root-connectionstring'
-          value: listKeys('${serviceBus.id}/AuthorizationRules/RootManageSharedAccessKey', serviceBus.apiVersion).primaryConnectionString
-        }
-      ]
       dapr: {
         enabled: true
         appId: 'message-receiver'
@@ -86,25 +137,25 @@ resource messagereceiver 'Microsoft.App/containerapps@2022-03-01' = {
       scale: {
         minReplicas: 0
         maxReplicas: 4
-        rules: [
-          {
-            name: 'service-bus-scale-rule'
-            custom: {
-              type: 'azure-servicebus'
-              metadata: {
-                topicName: 'events'
-                subscriptionName: 'receiver-service'
-                messageCount: '10'
-              }
-              auth: [
-                {
-                  secretRef: 'sb-root-connectionstring'
-                  triggerParameter: 'connection'
-                }
-              ]
-            }
-          }
-        ]
+        // rules: [
+        //   {
+        //     name: 'service-bus-scale-rule'
+        //     custom: {
+        //       type: 'azure-servicebus'
+        //       metadata: {
+        //         topicName: 'events'
+        //         subscriptionName: 'receiver-service'
+        //         messageCount: '10'
+        //       }
+        //       auth: [
+        //         {
+        //           secretRef: 'sb-root-connectionstring'
+        //           triggerParameter: 'connection'
+        //         }
+        //       ]
+        //     }
+        //   }
+        // ]
       }
     }
   }
