@@ -28,6 +28,21 @@ resource environment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
         sharedKey: logAnalyticsSharedKey
       }
     }
+    workloadProfiles: [
+      {
+        workloadProfileType: 'Consumption'
+      }
+      {
+        workloadProfileType: 'GP1'
+        MinimumCount: 1
+        MaximumCount: 3
+      }
+      {
+        workloadProfileType: 'CO1'
+        MinimumCount: 0
+        MaximumCount: 1
+      }
+    ]
     daprAIConnectionString: appInsightsConnectionString
     daprAIInstrumentationKey: appInsightsInstrumentationKey
     vnetConfiguration: {
