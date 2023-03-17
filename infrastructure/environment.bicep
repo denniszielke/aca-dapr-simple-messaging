@@ -30,17 +30,14 @@ resource environment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
     }
     workloadProfiles: [
       {
+        name: 'consumption'
         workloadProfileType: 'Consumption'
       }
       {
-        workloadProfileType: 'GP1'
+        name: 'f4-compute'
+        workloadProfileType: 'F4'
         MinimumCount: 1
         MaximumCount: 3
-      }
-      {
-        workloadProfileType: 'CO1'
-        MinimumCount: 0
-        MaximumCount: 1
       }
     ]
     daprAIConnectionString: appInsightsConnectionString

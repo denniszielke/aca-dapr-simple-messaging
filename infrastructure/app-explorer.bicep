@@ -25,7 +25,7 @@ resource explorer 'Microsoft.App/containerapps@2022-11-01-preview' = {
   }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
-    workloadProfileType: 'Consumption'
+    workloadProfileName: 'Consumption'
     configuration: {
       activeRevisionsMode: 'single'
       ingress: {

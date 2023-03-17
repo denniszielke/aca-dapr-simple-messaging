@@ -16,7 +16,7 @@ module logging 'logging.bicep' = {
 module environment 'environment.bicep' = {
   name: 'container-app-environment'
   params: {
-    environmentName: '${projectName}'
+    environmentName: 'a${projectName}'
     logAnalyticsCustomerId: logging.outputs.logAnalyticsCustomerId
     logAnalyticsSharedKey: logging.outputs.logAnalyticsSharedKey
     appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
