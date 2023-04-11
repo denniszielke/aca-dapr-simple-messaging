@@ -14,7 +14,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: 'vnet-${resourceGroup().name}'
 }
 
-resource environment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
+resource environment 'Microsoft.App/managedEnvironments@2023-02-01' = {
   name: environmentName
   location: location
   sku: {

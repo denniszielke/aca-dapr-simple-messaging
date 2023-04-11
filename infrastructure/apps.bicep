@@ -20,7 +20,7 @@ module logging 'logging.bicep' = {
 module environment 'environment.bicep' = {
   name: 'container-app-environment'
   params: {
-    environmentName: 'a${projectName}'
+    environmentName: '${projectName}'
     logAnalyticsCustomerId: logging.outputs.logAnalyticsCustomerId
     logAnalyticsSharedKey: logging.outputs.logAnalyticsSharedKey
     appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
@@ -44,7 +44,7 @@ module messagecreator 'app-creator.bicep' = {
   name: 'container-app-creator'
   params: {
     containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-creator:${creatorImageTag}'
-    environmentName: 'a${projectName}'
+    environmentName: '${projectName}'
     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
     serviceBusName: projectName
   }
@@ -54,7 +54,7 @@ module messagereceiver 'app-receiver.bicep' = {
   name: 'container-app-receiver'
   params: {
     containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-receiver:${receiverImageTag}'
-    environmentName: 'a${projectName}'
+    environmentName: '${projectName}'
     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
     serviceBusName: projectName
   }
@@ -64,9 +64,17 @@ module explorer 'app-explorer.bicep' = {
   name: 'container-app-explorer'
   params: {
     containerImage: 'ghcr.io/denniszielke/container-apps/js-dapr-explorer:3602565660'
-    environmentName: 'a${projectName}'
+    environmentName: '${projectName}'
     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
     storageAccountName: storage.outputs.storageAccountName
+  }
+}
+
+module logger 'app-logger.bicep' = {
+  name: 'container-app-logger'
+  params: {
+    containerImage: 'dzreg1.azurecr.io/dummy-logger:top'
+    environmentName: '${projectName}'
   }
 }
 

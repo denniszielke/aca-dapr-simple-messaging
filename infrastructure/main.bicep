@@ -16,7 +16,7 @@ module logging 'logging.bicep' = {
 module environment 'environment.bicep' = {
   name: 'container-app-environment'
   params: {
-    environmentName: 'a${projectName}'
+    environmentName: '${projectName}'
     logAnalyticsCustomerId: logging.outputs.logAnalyticsCustomerId
     logAnalyticsSharedKey: logging.outputs.logAnalyticsSharedKey
     appInsightsInstrumentationKey: logging.outputs.appInsightsInstrumentationKey
@@ -29,6 +29,13 @@ module servicebus 'servicebus.bicep' = {
   name: 'servicebus'
   params: {
     serviceBusName: 'sb-${projectName}'
+  }
+}
+
+module vnet 'vnet.bicep' = {
+  name: 'vnet'
+  params: {
+    location: location
   }
 }
 

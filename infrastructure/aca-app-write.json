@@ -1,0 +1,18 @@
+{
+    "Name": "ContainerApp Deployer",
+    "IsCustom": true,
+    "Description": "Write all containerapp resources, but does not allow you to make any changes to the environment",
+    "Actions": [
+        "Microsoft.App/containerApps/*/write",
+        "Microsoft.App/containerApps/write",
+        "Microsoft.Insights/alertRules/*",
+        "Microsoft.Resources/deployments/*",
+        "Microsoft.Resources/subscriptions/resourceGroups/read"
+    ],
+    "NotActions": [
+  
+    ],
+    "AssignableScopes": [
+      "/"
+    ]
+  }

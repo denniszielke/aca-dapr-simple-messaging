@@ -1,4 +1,3 @@
-param environmentName string
 param location string = resourceGroup().location
 
 resource subnetNSG 'Microsoft.Network/networkSecurityGroups@2022-01-01' = {
@@ -9,6 +8,45 @@ resource subnetNSG 'Microsoft.Network/networkSecurityGroups@2022-01-01' = {
     ]
   }
 }
+
+
+// resource hub 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+//   name: 'hub-${resourceGroup().name}'
+//   location: resourceGroup().location
+//   properties: {
+//     addressSpace: {
+//       addressPrefixes: [
+//         '10.1.0.0/19'
+//       ]
+//     }
+//     subnets: [
+//       {
+//         name: 'gateway'
+//         properties: {
+//           addressPrefix: '10.1.0.0/24'
+//         }
+//       }
+//       {
+//         name: 'jumpbox'
+//         properties: {
+//           addressPrefix: '10.1.1.0/24'
+//         }
+//       }
+//       {
+//         name: 'apim'
+//         properties: {
+//           addressPrefix: '10.1.2.0/24'
+//         }
+//       }
+//       {
+//         name: 'AzureFirewallSubnet'
+//         properties: {
+//           addressPrefix: '10.1.3.0/24'
+//         }
+//       }
+//     ]
+//   }
+// }
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: 'vnet-${resourceGroup().name}'
@@ -103,7 +141,7 @@ resource egressRoutingTable 'Microsoft.Network/routeTables@2020-11-01' = {
         properties: {
           addressPrefix: '0.0.0.0/0'
           nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: '10.0.3.4'
+          nextHopIpAddress: '10.1.3.4'
           hasBgpOverride: false
         }
       }

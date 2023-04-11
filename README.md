@@ -9,7 +9,7 @@ High Level Architecture:
 ## Deploy Azure resources
 
 ```
-PROJECT_NAME="dzaca67"
+PROJECT_NAME="dzaca30"
 LOCATION="westeurope"
 
 bash ./deploy-infra.sh $PROJECT_NAME $LOCATION
@@ -18,7 +18,7 @@ bash ./deploy-infra.sh $PROJECT_NAME $LOCATION
 
 ## Create config file
 ```
-PROJECT_NAME="dzaca67"
+PROJECT_NAME="dzaca27"
 bash ./create-config.sh $PROJECT_NAME
 ```
 
@@ -90,10 +90,24 @@ curl -svk -ls --verbose  -X POST -H "Host: $DNS" -H 'Accept: application/json' -
 ## Deploy Apps into Container Apps
 
 ```
-PROJECT_NAME="dzaca67"
+PROJECT_NAME="dzaca30"
 GITHUB_REPO_OWNER="denniszielke"
 IMAGE_TAG="latest"
 
 bash ./deploy-apps.sh $PROJECT_NAME $GITHUB_REPO_OWNER $IMAGE_TAG
 
 ```
+
+
+| Name | Display Name | Category | Cores | memoryGiB | Comments |
+|:--|:--|:--|--:|--:|:--|
+| `D4` | Dedicated-D4 | General Purpose | 4 | 16 | |
+| `D8` | Dedicated-D8 | General Purpose | 8 | 32 | |
+| `D16` | Dedicated-D16 | General Purpose | 16 | 64 | |
+| `E4` | Dedicated-E4 | Memory Optimized | 4 | 32 | |
+| `E8` | Dedicated-E8 | Memory Optimized | 8 | 64 | |
+| `E16` | Dedicated-E16 | Memory Optimized | 16 | 128 | |
+| `F4` |  Dedicated-F4 | Compute Optimized | 4 | 8 | |
+| `F8` |  Dedicated-F8 | Compute Optimized | 8 | 16 | |
+| `F16` |  Dedicated-F16 | Compute Optimized | 16 | 32 | |
+| `Consumption` | Consumption | Consumption | 4 | 8 | |
