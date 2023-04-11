@@ -34,8 +34,8 @@ resource environment 'Microsoft.App/managedEnvironments@2023-02-01' = {
         workloadProfileType: 'Consumption'
       }
       {
-        name: 'f4-compute'
-        workloadProfileType: 'F4'
+        name: 'd4-compute'
+        workloadProfileType: 'D4'
         MinimumCount: 1
         MaximumCount: 3
       }
