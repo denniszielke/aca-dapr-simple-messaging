@@ -17,9 +17,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
 resource environment 'Microsoft.App/managedEnvironments@2023-02-01' = {
   name: environmentName
   location: location
-  sku: {
-    name: 'Premium'
-  }
   properties: {
     appLogsConfiguration: {
       destination: 'log-analytics'
