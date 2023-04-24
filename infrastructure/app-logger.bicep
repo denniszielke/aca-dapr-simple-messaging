@@ -12,23 +12,23 @@ resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: keyVaultName
 }
 
-// resource mipolicy 'Microsoft.KeyVault/vaults/accessPolicies@2019-09-01' = {
-//   name: 'add'
-//   parent: kv
-//   properties: {
-//     accessPolicies: [
-//       {
-//         applicationId: '${loggermsi.properties.principalId}'
-//         permissions: {
-//           secrets: [
-//             'get'
-//           ]
-//         }
-//         tenantId: '${subscription().tenantId}'
-//       }
-//     ]
-//   }
-// }
+resource mipolicy 'Microsoft.KeyVault/vaults/accessPolicies@2019-09-01' = {
+  name: 'add'
+  parent: kv
+  properties: {
+    accessPolicies: [
+      {
+        objectId: '${loggermsi.properties.principalId}'
+        permissions: {
+          secrets: [
+            'get'
+          ]
+        }
+        tenantId: '${subscription().tenantId}'
+      }
+    ]
+  }
+}
 
 resource loggermsiacr 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
   name: 'logger-acr'
