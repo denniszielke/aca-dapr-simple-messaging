@@ -1,7 +1,6 @@
 param creatorImageTag string 
 param receiverImageTag string
 param containerRegistryOwner string
-
 @description('Location resources.')
 param location string = resourceGroup().location
 
@@ -73,8 +72,9 @@ module explorer 'app-explorer.bicep' = {
 module logger 'app-logger.bicep' = {
   name: 'container-app-logger'
   params: {
-    containerImage: 'dzreg1.azurecr.io/dummy-logger:top'
     environmentName: '${projectName}'
+    containerImage: 'ghcr.io/denniszielke/demos/js-dummy-logger:latest' // 'dzreg1.azurecr.io/dummy-logger:top'
+    keyVaultName: 'kvd${projectName}'
   }
 }
 

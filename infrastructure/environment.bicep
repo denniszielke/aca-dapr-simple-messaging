@@ -10,6 +10,11 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: storageAccountName
 }
 
+resource loggermsiacr 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'logger-acr'
+  location: location
+}
+
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: 'vnet-${resourceGroup().name}'
 }
@@ -41,7 +46,7 @@ resource environment 'Microsoft.App/managedEnvironments@2023-02-01' = {
     daprAIInstrumentationKey: appInsightsInstrumentationKey
     vnetConfiguration: {
       infrastructureSubnetId: '${vnet.id}/subnets/aca-apps'
-      internal: true
+      internal: false
     }
     zoneRedundant: false
   }

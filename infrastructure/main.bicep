@@ -13,6 +13,14 @@ module logging 'logging.bicep' = {
   }
 }
 
+module keyvault 'keyvault.bicep' = {
+  name: 'keyvault'
+  params: {
+    location: location
+    keyVaultName: 'kvd${projectName}'
+  }
+}
+
 module environment 'environment.bicep' = {
   name: 'container-app-environment'
   params: {

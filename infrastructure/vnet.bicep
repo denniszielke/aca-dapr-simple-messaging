@@ -99,9 +99,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
               }
             }
           ]
-          routeTable: {
-            id: egressRoutingTable.id
-          }
+          // routeTable: {
+          //   id: egressRoutingTable.id
+          // }
         }
       }
       {
@@ -121,9 +121,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
               }
             }
           ]
-          routeTable: {
-            id: egressRoutingTable.id
-          }
+          // routeTable: {
+          //   id: egressRoutingTable.id
+          // }
         }
       }
     ]

@@ -73,7 +73,7 @@ resource messagecreator 'Microsoft.App/containerapps@2022-11-01-preview' = {
   }
   properties: {
     managedEnvironmentId: resourceId('Microsoft.App/managedEnvironments', environmentName)
-    workloadProfileName: 'f4-compute'
+    workloadProfileName: 'consumption'
     configuration: {
       activeRevisionsMode: 'single'
       ingress: {
