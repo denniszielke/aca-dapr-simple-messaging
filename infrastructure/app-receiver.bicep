@@ -99,7 +99,7 @@ resource messagereceiver 'Microsoft.App/containerapps@2022-11-01-preview' = {
             {
               type: 'liveness'
               httpGet: {
-                path: '/ping'
+                path: '/healthz'
                 port: 8080
               }
               initialDelaySeconds: 5
@@ -108,7 +108,7 @@ resource messagereceiver 'Microsoft.App/containerapps@2022-11-01-preview' = {
             {
               type: 'readiness'
               httpGet: {
-                path: '/ping'
+                path: '/healthz'
                 port: 8080
               }
               initialDelaySeconds: 5

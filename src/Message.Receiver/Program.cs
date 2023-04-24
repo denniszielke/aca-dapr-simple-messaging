@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json").AddEnvironmentVariables();
 
+builder.Services.AddHealthChecks();
+
 builder.Services.AddControllers(options =>
 {
     options.RespectBrowserAcceptHeader = true;
@@ -32,6 +34,16 @@ builder.Services.Configure<JsonOptions>(options =>
 });
 
 var app = builder.Build();
+
+app.MapGet("/", () => {
+    return Results.Ok("Hi!");
+});
+
+app.MapHealthChecks("/healthz");
+
+app.MapGet("/", () => {
+    return Results.Ok("Hi!");
+});
 
 app.MapGet("/ping", () => {
     Console.WriteLine("Received ping.");
