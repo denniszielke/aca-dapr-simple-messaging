@@ -12,6 +12,16 @@ echo "No project name provided - aborting"
 exit 0;
 fi
 
+if [ "$REGISTRY_OWNER" == "" ]; then
+echo "No registry provided - aborting"
+exit 0;
+fi
+
+if [ "$IMAGE_TAG" == "" ]; then
+echo "No tag provided - defaulting to latest"
+IMAGE_TAG="latest"
+fi
+
 if [[ $PROJECT_NAME =~ ^[a-z0-9]{5,8}$ ]]; then
     echo "project name $PROJECT_NAME is valid"
 else
