@@ -13,11 +13,16 @@
     ],
     "configurations": [
         {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        },
+        {
             "name": "Creator",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-creator",
-            "program": "${workspaceFolder}/src/Message.Creator/bin/Debug/net6.0/Message.Creator.dll",
+            "program": "${workspaceFolder}/src/Message.Creator/bin/Debug/net7.0/Message.Creator.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Message.Creator",
             "stopAtEntry": false,
@@ -32,7 +37,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-receiver",
-            "program": "${workspaceFolder}/src/Message.Receiver/bin/Debug/net6.0/Message.Receiver.dll",
+            "program": "${workspaceFolder}/src/Message.Receiver/bin/Debug/net7.0/Message.Receiver.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Message.Receiver",
             "stopAtEntry": false,
@@ -41,11 +46,6 @@
                 "action": "openExternally",
                 "pattern": "\\bNow listening on:\\s+(http?://\\S+)"
             },
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
         }
     ]
 }

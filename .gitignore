@@ -12,3 +12,5 @@ jspm_packages/
 local.env
 
 components/**
+
+**/.dapr/

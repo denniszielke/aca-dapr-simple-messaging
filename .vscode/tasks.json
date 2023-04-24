@@ -35,8 +35,8 @@
             "type": "process",
             "args": [
                 "publish",
+                "${workspaceFolder}/src/Message.Creator/Message.Creator.csproj",
                 "${workspaceFolder}/src/Message.Receiver/Message.Receiver.csproj",
-                "${workspaceFolder}/src/Message.Sink/Message.Sink.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

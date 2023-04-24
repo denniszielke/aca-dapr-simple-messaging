@@ -61,6 +61,11 @@ app.MapPost("/receive", (DaprData<DeviceMessage> requestData) => {
     return Results.Ok(requestData.Data);
 });
 
+app.MapPost("/invoke", (DeviceMessage requestData) => {
+    Console.WriteLine("Subscriber received : " + requestData.Id);
+    return Results.Ok(requestData);
+});
+
 app.Run();
 
 public record DaprData<T> ([property: JsonPropertyName("data")] T Data, [property: JsonPropertyName("id")] string Id); 

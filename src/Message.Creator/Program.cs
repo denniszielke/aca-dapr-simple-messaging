@@ -35,21 +35,25 @@ builder.Services.Configure<JsonOptions>(options =>
     options.SerializerOptions.WriteIndented = true;
 });
 
-builder.Services.AddSingleton<ReceiverClient, ReceiverClient>();
-builder.Services.AddSingleton<DaprReceiverClient, DaprReceiverClient>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient("Receiver", client =>
+if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DAPR_HTTP_PORT")))
 {
-    client.BaseAddress = new Uri("http://localhost:" + (Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500"));
-});
-
-builder.Services.AddHttpClient("DaprReceiver", client =>
+    builder.Services.AddSingleton<IReceiverClient, ReceiverHttpClient>();
+    builder.Services.AddHttpClient("ReceiverHttpClient", client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:5025");
+    });
+}else
 {
-    client.BaseAddress = new Uri("http://localhost:" + (Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500"));
-});
+    builder.Services.AddSingleton<IReceiverClient, ReceiverDaprClient>();
+    builder.Services.AddHttpClient("ReceiverDaprClient", client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:" + (Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500"));
+    });
+}
 
 var app = builder.Build();
 

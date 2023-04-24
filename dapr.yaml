@@ -1,0 +1,17 @@
+version: 1
+common: # optional section for variables shared across apps
+  resourcesPath: ./components-local # any dapr resources to be shared across apps
+  env:  # any environment variable shared across apps
+    DEBUG: true
+apps:
+  - appID: message-creator # optional
+    appDirPath: ./src/Message.Creator # REQUIRED
+    appProtocol: http
+    appPort: 5023
+    appHealthCheckPath: "/healthz" 
+    command: ["dotnet", "run"]
+  - appID: message-receiver # optional 
+    appDirPath: ./src/Message.Receiver # REQUIRED
+    appProtocol: http
+    appPort: 5025
+    command: ["dotnet", "run"]

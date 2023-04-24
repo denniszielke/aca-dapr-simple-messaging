@@ -12,16 +12,15 @@ namespace Message.Creator.Controllers
     [Route("api")]
     public class MessageController : ControllerBase
     {
-        private readonly ReceiverClient _receiverClient;
-        private readonly DaprReceiverClient _daprReceiverClient;
+        // private readonly ReceiverClient _receiverClient;
+        // private readonly DaprReceiverClient _daprReceiverClient;
+        private readonly IReceiverClient _receiverClient;
         private readonly ILogger<MessageController> _logger;
 
-        public MessageController(ReceiverClient receiverClient,
-                                DaprReceiverClient daprReceiverClient,
+        public MessageController(IReceiverClient receiverClient,
                                  ILogger<MessageController> logger)
         {
             _receiverClient = receiverClient;
-            _daprReceiverClient = daprReceiverClient;
             _logger = logger;
         }
 
@@ -38,7 +37,7 @@ namespace Message.Creator.Controllers
                     return new BadRequestResult();
                 }
 
-                response = await _receiverClient.SendMessageAsync(message);   
+                response = await _receiverClient.InvokeMessageAsync(message);   
 
                 _logger.LogTrace($"written move {message}");
             }
@@ -66,7 +65,7 @@ namespace Message.Creator.Controllers
                     return new BadRequestResult();
                 }
 
-                response = await _daprReceiverClient.SendMessageAsync(message);   
+                response = await _receiverClient.PublishMessageAsync(message);   
 
                 _logger.LogTrace($"written move {message}");
             }
