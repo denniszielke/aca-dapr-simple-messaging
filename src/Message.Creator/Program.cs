@@ -41,6 +41,7 @@ builder.Services.AddSwaggerGen();
 
 if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DAPR_HTTP_PORT")))
 {
+    Console.WriteLine("No Dapr.");
     builder.Services.AddSingleton<IReceiverClient, ReceiverHttpClient>();
     builder.Services.AddHttpClient("ReceiverHttpClient", client =>
     {
@@ -48,6 +49,7 @@ if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DAPR_HTTP_PORT
     });
 }else
 {
+    Console.WriteLine("Found Dapr.");
     builder.Services.AddSingleton<IReceiverClient, ReceiverDaprClient>();
     builder.Services.AddHttpClient("ReceiverDaprClient", client =>
     {

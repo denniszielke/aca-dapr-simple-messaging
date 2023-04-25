@@ -62,7 +62,7 @@ app.MapPost("/receive", (DaprData<DeviceMessage> requestData) => {
 });
 
 app.MapPost("/invoke", (DeviceMessage requestData) => {
-    Console.WriteLine("Subscriber received : " + requestData.Id);
+    Console.WriteLine("Invoke received : " + requestData.Id);
     return Results.Ok(requestData);
 });
 
