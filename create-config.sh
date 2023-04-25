@@ -32,7 +32,7 @@ fi
 
 
 AI_CONNECTIONSTRING=$(az resource show -g $RESOURCE_GROUP -n appi-$PROJECT_NAME --resource-type "Microsoft.Insights/components" --query properties.ConnectionString -o tsv | tr -d '[:space:]')
-SB_CONNECTIONSTRING=$(az servicebus namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name $PROJECT_NAME --resource-group $RESOURCE_GROUP --query "primaryConnectionString" | tr -d '"')
+SB_CONNECTIONSTRING=$(az servicebus namespace authorization-rule keys list --name RootManageSharedAccessKey --namespace-name sb-$PROJECT_NAME --resource-group $RESOURCE_GROUP --query "primaryConnectionString" | tr -d '"')
 
 echo $AI_CONNECTIONSTRING
 echo $SB_CONNECTIONSTRING
@@ -45,7 +45,8 @@ replaces="s/{.serviceBusConnectionString}/$SB_CONNECTIONSTRING_ESC/;";
 
 mkdir -p components
 
-cat ./component-templates/queue-template.yaml | sed -e "$replaces" > ./components/queue.yaml
+cat ./component-templates/publisher-template.yaml | sed -e "$replaces" > ./components/publisher.yaml
+cat ./component-templates/receiver-template.yaml | sed -e "$replaces" > ./components/receiver.yaml
 
 echo "ApplicationInsights__ConnectionString=\"$AI_CONNECTIONSTRING\"" >> local.env
 

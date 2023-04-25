@@ -1,7 +1,7 @@
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: publisher
+  name: receiver
 spec:
   type: pubsub.azure.servicebus
   version: v1

@@ -31,13 +31,13 @@ bash ./create-config.sh $PROJECT_NAME
 ## Launch locally with Dapr
 
 ```
-cd /src/Message.Creator
+cd src/Message.Creator
 dapr run --app-id message-creator --components-path ../../components/ --app-port 5023 --dapr-http-port 3500  -- dotnet run --project .
 ```
 
 ```
-cd /src/Message.Receiver
-dapr run --app-id message-receiver --components-path ../../components/ --app-port 5025 --dapr-http-port 3500  -- dotnet run --project .
+cd src/Message.Receiver
+dapr run --app-id message-receiver --resources-path ../../components/ --app-port 5025 --dapr-http-port 3501  -- dotnet run --project .
 ```
 
 ```

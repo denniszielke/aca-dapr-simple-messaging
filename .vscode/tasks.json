@@ -53,6 +53,47 @@
                 "${workspaceFolder}/src/Message.Receiver/Message.Receiver.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "shell",
+            "isBackground": true,
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": true
+                    }
+                }
+            ],
+            "group": "build",
+            "label": "daprmulti",
+            "command": "dapr run -f dapr.yaml",
+            "windows": {
+                "command": "dapr run -f dapr.yaml"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "appId": "message-creator",
+            "appPort": 5025,
+            "label": "dapr-creator-debug",
+            "dependsOn": "build-creator",
+            "componentsPath": "./components-local",
+            "type": "dapr"
+        },
+        {
+            "appId": "message-creator",
+            "label": "daprd-creator-down",
+            "type": "daprd-down"
         }
     ]
 }

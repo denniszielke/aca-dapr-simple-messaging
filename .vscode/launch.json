@@ -30,8 +30,8 @@
             "serverReadyAction": {
                 "action": "openExternally",
                 "pattern": "\\bNow listening on:\\s+(http?://\\S+)"
-            },
-        },       
+            }
+        },
         {
             "name": "Receiver",
             "type": "coreclr",
@@ -45,7 +45,20 @@
             "serverReadyAction": {
                 "action": "openExternally",
                 "pattern": "\\bNow listening on:\\s+(http?://\\S+)"
-            },
+            }
+        },
+        {
+            "preLaunchTask": "daprmulti",
+            "type": "coreclr",
+            "request": "attach",
+            "name": "Dapr Multi Run"
+        },
+        {
+            "name": "Creator with Dapr",
+            "type": "coreclr",
+            "request": "attach",
+            "preLaunchTask": "dapr-creator-debug",
+            "postDebugTask": "daprd-creator-down"
         }
     ]
 }
