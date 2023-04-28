@@ -69,12 +69,20 @@ module explorer 'app-explorer.bicep' = {
   }
 }
 
-module logger 'app-logger.bicep' = {
-  name: 'container-app-logger'
+// module logger 'app-logger.bicep' = {
+//   name: 'container-app-logger'
+//   params: {
+//     environmentName: '${projectName}'
+//     containerImage: 'ghcr.io/denniszielke/demos/js-dummy-logger:latest' // 'dzreg1.azurecr.io/dummy-logger:top'
+//     keyVaultName: 'kvd${projectName}'
+//   }
+// }
+
+module leaker 'app-leaker.bicep' = {
+  name: 'container-app-leaker'
   params: {
     environmentName: '${projectName}'
-    containerImage: 'ghcr.io/denniszielke/demos/js-dummy-logger:latest' // 'dzreg1.azurecr.io/dummy-logger:top'
-    keyVaultName: 'kvd${projectName}'
+    containerImage: 'ghcr.io/denniszielke/demos/js-crashing-app:4805887323'
   }
 }
 

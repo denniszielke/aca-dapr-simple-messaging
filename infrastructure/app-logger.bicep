@@ -52,6 +52,7 @@ resource loggers 'Microsoft.App/containerapps@2022-11-01-preview' = {
       secrets: [
         {
             name: 'kvalue'
+            
             keyVaultUrl: 'https://${keyVaultName}.vault.azure.net/secrets/demovalue'
             identity: '${loggermsi.id}'
         }]
@@ -78,7 +79,7 @@ resource loggers 'Microsoft.App/containerapps@2022-11-01-preview' = {
       containers: [
         {
           image: containerImage
-          name: 'explorer'
+          name: 'logger'
           resources: {
             cpu: 1
             memory: '2Gi'

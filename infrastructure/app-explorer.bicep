@@ -30,14 +30,14 @@ resource explorer 'Microsoft.App/containerapps@2022-11-01-preview' = {
       activeRevisionsMode: 'single'
       ingress: {
         external: true
-        targetPort: 8080
+        targetPort: 3000
         allowInsecure: true    
         transport: 'Auto'
       }
       dapr: {
         enabled: true
         appId: 'explorer'
-        appPort: 8080
+        appPort: 3000
         appProtocol: 'http'
       }
     }
