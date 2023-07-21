@@ -9,10 +9,27 @@ High Level Architecture:
 ## Deploy Azure resources
 
 ```
-PROJECT_NAME="dzaca35"
+PROJECT_NAME="dzaca37"
 LOCATION="westeurope"
 
 bash ./deploy-infra.sh $PROJECT_NAME $LOCATION
+
+```
+
+## Build containers using buildpacks
+
+```
+REGISTRY_NAME="dimages"
+az acr login --name $REGISTRY_NAME
+
+az containerapp up --name message-receiver \
+  --location $LOCATION \
+  --environment $PROJECT_NAME \
+  -g $PROJECT_NAME \
+  --registry-server $REGISTRY_NAME.azurecr.io \
+  --ingress external \
+  --target-port 8080 \
+  --source ./src/Message.Receiver
 
 ```
 
@@ -74,7 +91,7 @@ HOST='10.0.16.27'
 ### Ping
 
 ```
--svk -ls -H 'Host: demo.greendune-d682b90f.westeurope.azurecontainerapps.io' http://10.0.5.11 --verbose
+-svk -ls --verbose -H 'Host: demo.greendune-d682b90f.westeurope.azurecontainerapps.io' http://10.0.5.11 --verbose
 curl -svk -ls --verbose -X GET -H "Host: $DNS" -H 'Accept: application/json' -H 'Content-Type: application/json'  http://$HOST/getname
 ```
 
@@ -90,7 +107,7 @@ curl -svk -ls --verbose  -X POST -H "Host: $DNS" -H 'Accept: application/json' -
 ## Deploy Apps into Container Apps
 
 ```
-PROJECT_NAME="dzaca30"
+PROJECT_NAME="dzaca37"
 GITHUB_REPO_OWNER="denniszielke"
 IMAGE_TAG="latest"
 

@@ -19,7 +19,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: 'vnet-${resourceGroup().name}'
 }
 
-resource environment 'Microsoft.App/managedEnvironments@2023-02-01' = {
+resource environment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
   name: environmentName
   location: location
   properties: {
@@ -38,8 +38,8 @@ resource environment 'Microsoft.App/managedEnvironments@2023-02-01' = {
       {
         name: 'd4-compute'
         workloadProfileType: 'D4'
-        MinimumCount: 1
-        MaximumCount: 3
+        minimumCount: 1
+        maximumCount: 3
       }
     ]
     daprAIConnectionString: appInsightsConnectionString

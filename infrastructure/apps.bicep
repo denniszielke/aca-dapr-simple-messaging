@@ -78,13 +78,13 @@ module explorer 'app-explorer.bicep' = {
 //   }
 // }
 
-module leaker 'app-leaker.bicep' = {
-  name: 'container-app-leaker'
-  params: {
-    environmentName: '${projectName}'
-    containerImage: 'ghcr.io/denniszielke/demos/js-crashing-app:4805887323'
-  }
-}
+// module leaker 'app-leaker.bicep' = {
+//   name: 'container-app-leaker'
+//   params: {
+//     environmentName: '${projectName}'
+//     containerImage: 'ghcr.io/denniszielke/demos/js-crashing-app:4805887323'
+//   }
+// }
 
 
 // az deployment group create -g dzca15cgithub -f ./deploy/apps.bicep -p explorerImageTag=latest -p calculatorImageTag=latest  -p containerRegistryOwner=denniszielke
