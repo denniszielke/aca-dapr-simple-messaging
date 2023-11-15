@@ -9,10 +9,18 @@ High Level Architecture:
 ## Deploy Azure resources
 
 ```
-PROJECT_NAME="dzaca37"
+PROJECT_NAME="dzaca399"
 LOCATION="westeurope"
 
 bash ./deploy-infra.sh $PROJECT_NAME $LOCATION
+
+az containerapp job create \
+    --name "my-job" --resource-group $PROJECT_NAME  --environment $PROJECT_NAME \
+    --trigger-type "Schedule" \
+    --replica-timeout 1800 --replica-retry-limit 0 --replica-completion-count 1 --parallelism 1 \
+    --image "mcr.microsoft.com/k8se/quickstart-jobs:latest" \
+    --cpu "0.25" --memory "0.5Gi" \
+    --cron-expression "*/1 * * * *" --workload-profile-name d8
 
 ```
 
