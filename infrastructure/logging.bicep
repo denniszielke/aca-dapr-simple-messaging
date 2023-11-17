@@ -27,15 +27,15 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: 'web'
   properties: {
     Application_Type: 'web'
-    DisableIpMasking: false
-    DisableLocalAuth: false
-    Flow_Type: 'Bluefield'
-    ForceCustomerStorageForProfiler: false
-    IngestionMode: 'LogAnalytics'
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
-    Request_Source: 'rest'
-    WorkspaceResourceId: logAnalyticsWorkspace.id
+    // DisableIpMasking: false
+    // DisableLocalAuth: false
+    // Flow_Type: 'Bluefield'
+    // ForceCustomerStorageForProfiler: false
+    // IngestionMode: 'LogAnalytics'
+    // publicNetworkAccessForIngestion: 'Enabled'
+    // publicNetworkAccessForQuery: 'Enabled'
+    // Request_Source: 'rest'
+    // WorkspaceResourceId: logAnalyticsWorkspace.id
   }
 }
 

@@ -20,14 +20,22 @@ builder.Configuration.AddJsonFile("appsettings.json").AddEnvironmentVariables();
 
 const string serviceName = "message-receiver";
 
+builder.Logging.ClearProviders();
+
 builder.Logging.AddOpenTelemetry(options =>
 {
-    options
-        .SetResourceBuilder(
-            ResourceBuilder.CreateDefault()
-                .AddService(serviceName))
-        .AddConsoleExporter();
+    options.AddOtlpExporter();
+    options.AddConsoleExporter();        
 });
+
+// builder.Logging.AddOpenTelemetry(options =>
+// {
+//     options
+//         .SetResourceBuilder(
+//             ResourceBuilder.CreateDefault()
+//                 .AddService(serviceName))
+//         .AddConsoleExporter();
+// });
 builder.Services.AddOpenTelemetry()
       .ConfigureResource(resource => resource.AddService(serviceName))
       .WithTracing(tracing => tracing

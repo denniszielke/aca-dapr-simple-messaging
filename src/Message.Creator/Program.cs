@@ -22,14 +22,23 @@ builder.Configuration.AddJsonFile("appsettings.json").AddEnvironmentVariables();
 
 const string serviceName = "message-creator";
 
+builder.Logging.ClearProviders();
+
 builder.Logging.AddOpenTelemetry(options =>
 {
-    options
-        .SetResourceBuilder(
-            ResourceBuilder.CreateDefault()
-                .AddService(serviceName))
-        .AddConsoleExporter();
+    options.AddOtlpExporter();
+    options.AddConsoleExporter();        
 });
+
+// builder.Logging.AddOpenTelemetry(options =>
+// {
+//     options
+//         .SetResourceBuilder(
+//             ResourceBuilder.CreateDefault()
+//                 .AddService(serviceName))
+//         .AddConsoleExporter();
+// });
+
 builder.Services.AddOpenTelemetry()
       .ConfigureResource(resource => resource.AddService(serviceName))
       .WithTracing(tracing => tracing
@@ -41,6 +50,9 @@ builder.Services.AddOpenTelemetry()
           .AddAspNetCoreInstrumentation()
           .AddConsoleExporter()
           .AddOtlpExporter());
+
+Action<ResourceBuilder> configureResource = r => r.AddService(
+    serviceName, serviceVersion: assemblyVersion, serviceInstanceId: Environment.MachineName);
 
 builder.Services.AddHealthChecks();
 
