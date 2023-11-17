@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System.Text;
 using System.Text.Json;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 
 namespace Message.Creator.Controllers
 {
@@ -17,11 +19,19 @@ namespace Message.Creator.Controllers
         private readonly IReceiverClient _receiverClient;
         private readonly ILogger<MessageController> _logger;
 
+        private readonly Meter _meter = new Meter("Message.Creator");
+
+        private readonly Counter<long> publishCounter;
+
+        private readonly Counter<long> sendCounter;
+
         public MessageController(IReceiverClient receiverClient,
                                  ILogger<MessageController> logger)
         {
             _receiverClient = receiverClient;
             _logger = logger;
+            publishCounter = _meter.CreateCounter<long>("publish.count", description: "Number of successful publishes");
+            sendCounter = _meter.CreateCounter<long>("send.count", description: "Number of successful sends");
         }
 
         [HttpPost("/receive")]
@@ -38,7 +48,7 @@ namespace Message.Creator.Controllers
                 }
 
                 response = await _receiverClient.InvokeMessageAsync(message);   
-
+                sendCounter.Add(1);
                 _logger.LogTrace($"written move {message}");
             }
             catch (System.Exception ex)
@@ -66,7 +76,7 @@ namespace Message.Creator.Controllers
                 }
 
                 response = await _receiverClient.PublishMessageAsync(message);   
-
+                publishCounter.Add(1);
                 _logger.LogTrace($"written move {message}");
             }
             catch (System.Exception ex)

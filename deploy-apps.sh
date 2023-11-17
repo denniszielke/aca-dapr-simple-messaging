@@ -22,10 +22,10 @@ echo "No tag provided - defaulting to latest"
 IMAGE_TAG="latest"
 fi
 
-if [[ $PROJECT_NAME =~ ^[a-z0-9]{5,8}$ ]]; then
+if [[ $PROJECT_NAME =~ ^[a-z0-9]{5,10}$ ]]; then
     echo "project name $PROJECT_NAME is valid"
 else
-    echo "project name $PROJECT_NAME is invalid - only numbers and lower case min 5 and max 8 characters allowed - aborting"
+    echo "project name $PROJECT_NAME is invalid - only numbers and lower case min 5 and max 10 characters allowed - aborting"
     exit 0;
 fi
 

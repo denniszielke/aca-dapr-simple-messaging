@@ -9,7 +9,7 @@ High Level Architecture:
 ## Deploy Azure resources
 
 ```
-PROJECT_NAME="dzaca399"
+PROJECT_NAME="dzotelaca"
 LOCATION="westeurope"
 
 bash ./deploy-infra.sh $PROJECT_NAME $LOCATION

@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
@@ -5,12 +6,41 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http.Json;
 using Message.Creator.Clients;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.FileProviders;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Instrumentation.AspNetCore;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
+
 builder.Configuration.AddJsonFile("appsettings.json").AddEnvironmentVariables();
+
+const string serviceName = "message-creator";
+
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options
+        .SetResourceBuilder(
+            ResourceBuilder.CreateDefault()
+                .AddService(serviceName))
+        .AddConsoleExporter();
+});
+builder.Services.AddOpenTelemetry()
+      .ConfigureResource(resource => resource.AddService(serviceName))
+      .WithTracing(tracing => tracing
+          .AddHttpClientInstrumentation()
+          .AddAspNetCoreInstrumentation()
+          .AddConsoleExporter()
+          .AddOtlpExporter())
+      .WithMetrics(metrics => metrics
+          .AddAspNetCoreInstrumentation()
+          .AddConsoleExporter()
+          .AddOtlpExporter());
 
 builder.Services.AddHealthChecks();
 
@@ -23,10 +53,13 @@ builder.Services.AddLogging(config =>
 {
     config.AddDebug();
     config.AddConsole();
+    config.AddOpenTelemetry(options =>
+    {
+        options.IncludeScopes = true;
+        options.ParseStateValues = true;
+        options.IncludeFormattedMessage = true;
+    });
 });
-
-builder.Services.AddApplicationInsightsTelemetry();
-builder.Services.AddSingleton<ITelemetryInitializer, CloudRoleNameTelemetryInitializer>();
 
 builder.Services.Configure<JsonOptions>(options =>
 {
