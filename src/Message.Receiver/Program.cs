@@ -24,7 +24,7 @@ builder.Logging.ClearProviders();
 
 builder.Logging.AddOpenTelemetry(options =>
 {
-    options.AddOtlpExporter();
+    // options.AddOtlpExporter();
     options.AddConsoleExporter();        
 });
 
