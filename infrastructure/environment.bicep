@@ -19,7 +19,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: 'vnet-${resourceGroup().name}'
 }
 
-resource environment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
+resource environment 'Microsoft.App/managedEnvironments@2023-08-01-preview' = {
   name: environmentName
   location: location
   properties: {
@@ -30,20 +30,13 @@ resource environment 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
         sharedKey: logAnalyticsSharedKey
       }
     }
+
     workloadProfiles: [
       {
         name: 'consumption'
         workloadProfileType: 'Consumption'
       }
-      {
-        name: 'd4-compute'
-        workloadProfileType: 'D4'
-        minimumCount: 1
-        maximumCount: 3
-      }
     ]
-    daprAIConnectionString: appInsightsConnectionString
-    daprAIInstrumentationKey: appInsightsInstrumentationKey
     vnetConfiguration: {
       infrastructureSubnetId: '${vnet.id}/subnets/aca-apps'
       internal: false

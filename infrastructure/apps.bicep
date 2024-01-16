@@ -59,15 +59,15 @@ module messagereceiver 'app-receiver.bicep' = {
   }
 }
 
-// module explorer 'app-explorer.bicep' = {
-//   name: 'container-app-explorer'
-//   params: {
-//     containerImage: 'ghcr.io/denniszielke/container-apps/js-dapr-explorer:latest'
-//     environmentName: '${projectName}'
-//     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
-//     storageAccountName: storage.outputs.storageAccountName
-//   }
-// }
+module explorer 'app-explorer.bicep' = {
+  name: 'container-app-explorer'
+  params: {
+    containerImage: 'ghcr.io/denniszielke/container-apps/js-dapr-explorer:latest'
+    environmentName: '${projectName}'
+    appInsightsConnectionString: logging.outputs.appInsightsConnectionString
+    storageAccountName: storage.outputs.storageAccountName
+  }
+}
 
 module logger 'app-otel.bicep' = {
   name: 'container-app-logger'

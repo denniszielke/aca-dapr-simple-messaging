@@ -1,6 +1,7 @@
 param environmentName string
 param location string = resourceGroup().location
 param containerImage string
+param useDapr bool = false
 
 resource leakermsi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: 'leaker-msi'
@@ -41,7 +42,7 @@ resource leaker 'Microsoft.App/containerapps@2022-11-01-preview' = {
         transport: 'Auto'
       }
       dapr: {
-        enabled: true
+        enabled: useDapr
         appId: 'leaker'
         appPort: 8080
         appProtocol: 'http'

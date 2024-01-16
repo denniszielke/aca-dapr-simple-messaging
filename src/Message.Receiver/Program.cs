@@ -11,42 +11,48 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Message.Receiver;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
 
 builder.Configuration.AddJsonFile("appsettings.json").AddEnvironmentVariables();
-
 const string serviceName = "message-receiver";
 
-builder.Logging.ClearProviders();
+builder.Services.AddSingleton<MessageMetrics>();
 
+var otel = builder.Services.AddOpenTelemetry();
+
+// Configure OpenTelemetry Resources with the application name
+otel.ConfigureResource(resource => resource
+    .AddService(serviceName: builder.Environment.ApplicationName));
+
+builder.Logging.ClearProviders();
 builder.Logging.AddOpenTelemetry(options =>
 {
-    // options.AddOtlpExporter();
+    options.AddOtlpExporter();
     options.AddConsoleExporter();        
 });
 
-// builder.Logging.AddOpenTelemetry(options =>
-// {
-//     options
-//         .SetResourceBuilder(
-//             ResourceBuilder.CreateDefault()
-//                 .AddService(serviceName))
-//         .AddConsoleExporter();
-// });
-builder.Services.AddOpenTelemetry()
-      .ConfigureResource(resource => resource.AddService(serviceName))
-      .WithTracing(tracing => tracing
-          .AddHttpClientInstrumentation()
-          .AddAspNetCoreInstrumentation()
-          .AddConsoleExporter()
-          .AddOtlpExporter())
-      .WithMetrics(metrics => metrics
-          .AddAspNetCoreInstrumentation()
-          .AddConsoleExporter()
-          .AddOtlpExporter());
+otel.WithMetrics(metrics => metrics
+    // Metrics provider from OpenTelemetry
+    .AddAspNetCoreInstrumentation()
+    // Metrics provides by ASP.NET Core in .NET 8
+    .AddMeter("Microsoft.AspNetCore.Hosting")
+    .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
+    .AddMeter("System.Net.Http")
+    .AddOtlpExporter()
+    .AddPrometheusExporter());
+
+// Add Tracing for ASP.NET Core and our custom ActivitySource and export to Jaeger
+otel.WithTracing(tracing =>
+{
+    tracing.AddAspNetCoreInstrumentation();
+    tracing.AddHttpClientInstrumentation();
+    tracing.AddOtlpExporter();
+    // tracing.AddConsoleExporter();
+});
 
 builder.Services.AddHealthChecks();
 
@@ -97,13 +103,15 @@ app.MapGet("/dapr/subscribe", () => {
     return Results.Json(new DaprSubscription[]{sub});
 });
 
-app.MapPost("/receive", (DaprData<DeviceMessage> requestData) => {
+app.MapPost("/receive", (DaprData<DeviceMessage> requestData, MessageMetrics metrics) => {
     Console.WriteLine("Subscriber received : " + requestData.Id);
+    metrics.MessagesReceived(requestData.Data.ToString(), 1);
     return Results.Ok(requestData.Data);
 });
 
-app.MapPost("/invoke", (DeviceMessage requestData) => {
+app.MapPost("/invoke", (DeviceMessage requestData, MessageMetrics metrics) => {
     Console.WriteLine("Invoke received : " + requestData.Id);
+    metrics.MessagesInvoked(requestData.Name.ToString(), 1);
     return Results.Ok(requestData);
 });
 

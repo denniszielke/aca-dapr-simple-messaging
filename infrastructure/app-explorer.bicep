@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 param appInsightsConnectionString string
 param containerImage string
 param storageAccountName string 
+param useDapr bool = true
 
 resource expmsi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: 'explorer-msi'
@@ -35,7 +36,7 @@ resource explorer 'Microsoft.App/containerapps@2022-11-01-preview' = {
         transport: 'Auto'
       }
       dapr: {
-        enabled: true
+        enabled: useDapr
         appId: 'explorer'
         appPort: 3000
         appProtocol: 'http'

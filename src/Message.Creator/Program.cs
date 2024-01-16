@@ -13,43 +13,48 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Message.Creator;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
 
 builder.Configuration.AddJsonFile("appsettings.json").AddEnvironmentVariables();
-
 const string serviceName = "message-creator";
 
-builder.Logging.ClearProviders();
+builder.Services.AddSingleton<MessageMetrics>();
 
+var otel = builder.Services.AddOpenTelemetry();
+
+// Configure OpenTelemetry Resources with the application name
+otel.ConfigureResource(resource => resource
+    .AddService(serviceName: builder.Environment.ApplicationName));
+
+builder.Logging.ClearProviders();
 builder.Logging.AddOpenTelemetry(options =>
 {
-    // options.AddOtlpExporter();
+    options.AddOtlpExporter();
     options.AddConsoleExporter();        
 });
 
-// builder.Logging.AddOpenTelemetry(options =>
-// {
-//     options
-//         .SetResourceBuilder(
-//             ResourceBuilder.CreateDefault()
-//                 .AddService(serviceName))
-//         .AddConsoleExporter();
-// });
+otel.WithMetrics(metrics => metrics
+    // Metrics provider from OpenTelemetry
+    .AddAspNetCoreInstrumentation()
+    // Metrics provides by ASP.NET Core in .NET 8
+    .AddMeter("Microsoft.AspNetCore.Hosting")
+    .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
+    .AddMeter("System.Net.Http")
+    .AddOtlpExporter()
+    .AddPrometheusExporter());
 
-builder.Services.AddOpenTelemetry()
-      .ConfigureResource(resource => resource.AddService(serviceName))
-      .WithTracing(tracing => tracing
-          .AddHttpClientInstrumentation()
-          .AddAspNetCoreInstrumentation()
-          .AddConsoleExporter()
-          .AddOtlpExporter())
-      .WithMetrics(metrics => metrics
-          .AddAspNetCoreInstrumentation()
-          .AddConsoleExporter()
-          .AddOtlpExporter());
+// Add Tracing for ASP.NET Core and our custom ActivitySource and export to Jaeger
+otel.WithTracing(tracing =>
+{
+    tracing.AddAspNetCoreInstrumentation();
+    tracing.AddHttpClientInstrumentation();
+    tracing.AddOtlpExporter();
+    // tracing.AddConsoleExporter();
+});
 
 Action<ResourceBuilder> configureResource = r => r.AddService(
     serviceName, serviceVersion: assemblyVersion, serviceInstanceId: Environment.MachineName);
@@ -59,18 +64,6 @@ builder.Services.AddHealthChecks();
 builder.Services.AddControllers(options =>
 {
     options.RespectBrowserAcceptHeader = true;
-});
-
-builder.Services.AddLogging(config =>
-{
-    config.AddDebug();
-    config.AddConsole();
-    config.AddOpenTelemetry(options =>
-    {
-        options.IncludeScopes = true;
-        options.ParseStateValues = true;
-        options.IncludeFormattedMessage = true;
-    });
 });
 
 builder.Services.Configure<JsonOptions>(options =>
@@ -112,8 +105,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapHealthChecks("/healthz");
-
 app.MapControllers();
+app.MapPrometheusScrapingEndpoint();
 
 app.UseStaticFiles();
 var options = new DefaultFilesOptions();

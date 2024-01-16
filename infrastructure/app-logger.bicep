@@ -2,6 +2,7 @@ param environmentName string
 param location string = resourceGroup().location
 param containerImage string
 param keyVaultName string
+param useDapr bool = false
 
 resource loggermsi 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: 'logger-msi'
@@ -69,7 +70,7 @@ resource loggers 'Microsoft.App/containerapps@2022-11-01-preview' = {
         transport: 'Auto'
       }
       dapr: {
-        enabled: true
+        enabled: useDapr
         appId: 'logger'
         appPort: 80
         appProtocol: 'http'

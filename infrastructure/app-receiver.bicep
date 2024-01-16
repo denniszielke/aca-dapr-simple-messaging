@@ -3,6 +3,7 @@ param location string = resourceGroup().location
 param appInsightsConnectionString string
 param containerImage string
 param serviceBusName string 
+param useDapr bool = false
 
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-06-01-preview' existing = {
   name: serviceBusName
@@ -80,7 +81,7 @@ resource messagereceiver 'Microsoft.App/containerapps@2022-11-01-preview' = {
         transport: 'Auto'
       }
       dapr: {
-        enabled: true
+        enabled: useDapr
         appId: 'message-receiver'
         appPort: 8080
         appProtocol: 'http'
