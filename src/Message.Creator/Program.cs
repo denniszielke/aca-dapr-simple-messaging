@@ -81,10 +81,21 @@ if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DAPR_HTTP_PORT
 {
     Console.WriteLine("No Dapr.");
     builder.Services.AddSingleton<IReceiverClient, ReceiverHttpClient>();
-    builder.Services.AddHttpClient("ReceiverHttpClient", client =>
+
+    if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("RECEIVER_URL"))){
+        Console.WriteLine("No receiver url.");
+         builder.Services.AddHttpClient("ReceiverHttpClient", client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5025");
+        });
+    }else
     {
-        client.BaseAddress = new Uri("http://localhost:5025");
-    });
+        Console.WriteLine("Found receiver url.");
+        builder.Services.AddHttpClient("ReceiverHttpClient", client =>
+        {
+            client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("RECEIVER_URL"));
+        });
+    }
 }else
 {
     Console.WriteLine("Found Dapr.");

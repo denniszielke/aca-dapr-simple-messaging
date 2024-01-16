@@ -1,6 +1,5 @@
 param environmentName string
 param location string = resourceGroup().location
-param appInsightsConnectionString string
 param containerImage string
 param serviceBusName string 
 param useDapr bool = false
@@ -128,10 +127,6 @@ resource messagereceiver 'Microsoft.App/containerapps@2022-11-01-preview' = {
             {
               name: 'ASPNETCORE_URLS'
               value: 'http://+:8080'
-            }
-            {
-              name: 'ApplicationInsights__ConnectionString'
-              value: appInsightsConnectionString
             }
           ]
         }
