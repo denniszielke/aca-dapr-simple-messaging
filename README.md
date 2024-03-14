@@ -9,7 +9,7 @@ High Level Architecture:
 ## Deploy Azure resources
 
 ```
-PROJECT_NAME="dzotelac4"
+PROJECT_NAME="dznginx"
 LOCATION="eastus"
 
 bash ./deploy-infra.sh $PROJECT_NAME $LOCATION

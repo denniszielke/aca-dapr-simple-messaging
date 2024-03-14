@@ -26,3 +26,10 @@ resource subscriptionb 'Microsoft.ServiceBus/namespaces/topics/subscriptions@202
   properties: {
   }
 }
+
+resource queueuename 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+  name: 'queueuename'
+  parent: serviceBus
+  properties: {
+  }
+}

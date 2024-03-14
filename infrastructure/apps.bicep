@@ -39,41 +39,50 @@ module storage 'storage.bicep' = {
   name: 'storage'
 }
 
-module messagecreator 'app-creator.bicep' = {
-  name: 'container-app-creator'
+module nginx 'app-nginx.bicep' = {
+  name: 'nginx-app'
   params: {
-    containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-creator:${creatorImageTag}'
+    containerImage: 'docker.io/denniszielke/nginx-dapr'
     environmentName: '${projectName}'
     serviceBusName: projectName
   }
 }
 
-module messagereceiver 'app-receiver.bicep' = {
-  name: 'container-app-receiver'
-  params: {
-    containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-receiver:${receiverImageTag}'
-    environmentName: '${projectName}'
-    serviceBusName: projectName
-  }
-}
+// module messagecreator 'app-creator.bicep' = {
+//   name: 'container-app-creator'
+//   params: {
+//     containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-creator:${creatorImageTag}'
+//     environmentName: '${projectName}'
+//     serviceBusName: projectName
+//   }
+// }
 
-module explorer 'app-explorer.bicep' = {
-  name: 'container-app-explorer'
-  params: {
-    containerImage: 'ghcr.io/denniszielke/container-apps/js-dapr-explorer:latest'
-    environmentName: '${projectName}'
-    appInsightsConnectionString: logging.outputs.appInsightsConnectionString
-    storageAccountName: storage.outputs.storageAccountName
-  }
-}
+// module messagereceiver 'app-receiver.bicep' = {
+//   name: 'container-app-receiver'
+//   params: {
+//     containerImage: 'ghcr.io/${containerRegistryOwner}/aca-dapr/message-receiver:${receiverImageTag}'
+//     environmentName: '${projectName}'
+//     serviceBusName: projectName
+//   }
+// }
 
-module logger 'app-otel.bicep' = {
-  name: 'container-app-logger'
-  params: {
-    environmentName: '${projectName}'
-    containerImage: 'testcontainerregistrymichdai.azurecr.io/oteldemoimage:latest' // 'dzreg1.azurecr.io/dummy-logger:top'
-  }
-}
+// module explorer 'app-explorer.bicep' = {
+//   name: 'container-app-explorer'
+//   params: {
+//     containerImage: 'ghcr.io/denniszielke/container-apps/js-dapr-explorer:latest'
+//     environmentName: '${projectName}'
+//     appInsightsConnectionString: logging.outputs.appInsightsConnectionString
+//     storageAccountName: storage.outputs.storageAccountName
+//   }
+// }
+
+// module logger 'app-otel.bicep' = {
+//   name: 'container-app-logger'
+//   params: {
+//     environmentName: '${projectName}'
+//     containerImage: 'testcontainerregistrymichdai.azurecr.io/oteldemoimage:latest' // 'dzreg1.azurecr.io/dummy-logger:top'
+//   }
+// }
 
 // module logger 'app-logger.bicep' = {
 //   name: 'container-app-logger'
