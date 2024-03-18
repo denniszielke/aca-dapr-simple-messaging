@@ -16,3 +16,4 @@ components/**
 **/.dapr/
 
 env
+*.sln
